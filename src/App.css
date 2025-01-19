@@ -1,0 +1,55 @@
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap");
+
+* {
+  padding: 0%;
+  margin: 0%;
+  box-sizing: border-box;
+  font-family: "Cairo", sans-serif !important;
+}
+body {
+  direction: rtl !important;
+}
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(0, 0, 73);
+}
+
+.no-scroll-bar::-webkit-scrollbar-thumb {
+  background-color: gainsboro;
+}
+.no-scroll-bar::-webkit-scrollbar {
+  height: 4px;
+}
+
+@keyframes Show_Up_Animation {
+  from {
+    opacity: 0;
+    translate: 0px 100%;
+  }
+  to {
+    opacity: 1;
+    translate: 0px 0%;
+  }
+}
+@keyframes Show_Opacity_Animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.show-up-animation {
+  animation: 1 Show_Up_Animation 0.2s linear;
+}
+.show-opacity-animation {
+  will-change: opacity;
+  animation: 1 Show_Opacity_Animation 0.2s linear;
+}
+.ql-editor {
+  direction: rtl !important;
+  text-align: right !important;
+}
