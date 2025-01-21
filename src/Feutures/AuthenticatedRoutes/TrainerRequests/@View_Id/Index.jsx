@@ -146,7 +146,7 @@ export default function TrainerRequestDetails() {
   const HandleDelete = async () => {
     await deleteRequest({
       method: "delete",
-      url: `/trainerRequests/${_id}`,
+      url: `/trainerRequests/${_id}/moveToTrash`,
       headers: {
         Authorization: `Bearer ${user.data.token}`,
       },

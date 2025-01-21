@@ -154,7 +154,7 @@ export const MealCategory = ({
   const HandleDelete = async (data) => {
     try {
       await onDeleteTool({
-        url: `/mealsCategory/${_id}`,
+        url: `/mealsCategory/${_id}/moveToTrash`,
         headers: {
           Authorization: `Bearer ${user.data.token}`,
         },

@@ -126,7 +126,7 @@ export const BodyPart = ({
   const HandleDelete = async (data) => {
     try {
       await onDeleteTool({
-        url: `/bodyParts/${_id}`,
+        url: `/bodyParts/${_id}/moveToTrash`,
         headers: {
           Authorization: `Bearer ${user.data.token}`,
         },

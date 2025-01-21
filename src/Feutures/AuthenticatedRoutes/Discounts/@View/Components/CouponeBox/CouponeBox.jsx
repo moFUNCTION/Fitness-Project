@@ -181,7 +181,7 @@ export const CouponeBox = ({
   const HandleDelete = async (data) => {
     try {
       await onDeleteTool({
-        url: `/coupons/${_id}`,
+        url: `/coupons/${_id}/moveToTrash`,
         headers: {
           Authorization: `Bearer ${user.data.token}`,
         },

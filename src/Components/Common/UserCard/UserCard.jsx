@@ -41,7 +41,7 @@ export const UserCard = ({
   const handleDelete = async () => {
     try {
       await onDelete({
-        url: `/users/${_id}`,
+        url: `/users/${_id}/moveToTrash`,
         method: "delete",
         headers: {
           Authorization: `Bearer ${user.data.token}`,

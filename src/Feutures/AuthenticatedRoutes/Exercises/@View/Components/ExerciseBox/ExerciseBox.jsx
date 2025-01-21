@@ -58,7 +58,7 @@ export const ExerciseBox = ({
   const HandleDelete = async () => {
     await sendRequest({
       method: "delete",
-      url: `/Exercises/${_id}`,
+      url: `/Exercises/${_id}/moveToTrash`,
       headers: {
         Authorization: `Bearer ${user.data.token}`,
       },

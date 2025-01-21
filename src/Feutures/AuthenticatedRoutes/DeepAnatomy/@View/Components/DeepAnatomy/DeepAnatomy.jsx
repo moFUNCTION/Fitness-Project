@@ -125,7 +125,7 @@ export const DeepAnatomy = ({
   const HandleDelete = async (data) => {
     try {
       await onDeleteTool({
-        url: `/deepAnatomy/${_id}`,
+        url: `/deepAnatomy/${_id}/moveToTrash`,
         headers: {
           Authorization: `Bearer ${user.data.token}`,
         },

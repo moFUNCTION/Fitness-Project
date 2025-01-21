@@ -52,7 +52,7 @@ export const LessonBox = ({
   const HandleDelete = async () => {
     await sendRequest({
       method: "delete",
-      url: `/lessons/${_id}`,
+      url: `/lessons/${_id}/moveToTrash`,
       headers: {
         Authorization: `Bearer ${user.data.token}`,
       },

@@ -3,6 +3,7 @@ import {
   Flex,
   Heading,
   HStack,
+  IconButton,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,7 +18,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useTransition } from "react";
 import { GiMedicinePills } from "react-icons/gi";
 import { Link } from "react-router-dom";
 import { useFetch } from "../../../../Hooks/useFetch/useFetch";
@@ -25,6 +26,7 @@ import { Pagination } from "../../../../Components/Common/Pagination/Pagination"
 import { useAuth } from "../../../../Context/UserDataContextProvider/UserDataContextProvder";
 import { UserProfileBox } from "./Components/UserBox";
 import { useApiRequest } from "../../../../Hooks/useApiRequest/useApiRequest";
+import { MdCancel, MdNotifications } from "react-icons/md";
 const paths = [
   {
     name: "المشرفين",
@@ -85,8 +87,18 @@ export default function Index() {
     isClosable: true,
     position: "top-right",
   });
+  const [selectedItems, setSelectedItems] = useState([]);
+  const HandleSelectUser = (id) => {
+    setSelectedItems((prev) => [...prev, id]);
+  };
+  const HandleRemoveUserSelection = (id) => {
+    setSelectedItems((prev) => prev.filter((item) => item !== id));
+  };
   const { user } = useAuth();
   const [selectedRole, setSelectedRole] = useState("admins");
+  const [isPending, startTransition] = useTransition();
+  const HandleChangeRole = (role) =>
+    startTransition(() => setSelectedRole(role));
   const [page, setPage] = useState(1);
   const { data, loading, HandleRender } = useFetch({
     endpoint: `/users/getAll/${selectedRole}`,
@@ -112,7 +124,7 @@ export default function Index() {
       url: "notifications",
       method: "post",
       body: {
-        users: [],
+        users: selectedItems,
         message,
       },
       headers: {
@@ -157,9 +169,6 @@ export default function Index() {
             <Button as={Link} to="add" colorScheme="blue">
               اضافة مستخدم
             </Button>
-            <Button onClick={onNotificationOpen} colorScheme="orange">
-              ارسال اشعار
-            </Button>
           </Flex>
         </HStack>
         <Flex
@@ -170,6 +179,8 @@ export default function Index() {
           borderRadius="lg"
           gap="3"
           wrap="wrap"
+          as={Skeleton}
+          isLoaded={!isPending}
         >
           {paths.map((path) => {
             return (
@@ -177,13 +188,25 @@ export default function Index() {
                 variant={path.href === selectedRole ? "outline" : "solid"}
                 colorScheme="blue"
                 key={path.href}
-                onClick={() => setSelectedRole(path.href)}
+                onClick={() => HandleChangeRole(path.href)}
               >
                 {path.name}
               </Button>
             );
           })}
         </Flex>
+        {selectedItems.length >= 1 && (
+          <Flex gap="4" justifyContent="center" p="3" bgColor="gray.100">
+            <Button onClick={onNotificationOpen} gap="3" colorScheme="orange">
+              ارسال اشعار للمستخدمين
+              <MdNotifications />
+            </Button>
+            <IconButton onClick={() => setSelectedItems([])} colorScheme="red">
+              <MdCancel />
+            </IconButton>
+          </Flex>
+        )}
+
         <Flex
           p="3"
           minH="400px"
@@ -198,7 +221,14 @@ export default function Index() {
         >
           {data?.data?.map((item) => {
             return (
-              <UserProfileBox {...item} key={item.id} onRender={HandleRender} />
+              <UserProfileBox
+                {...item}
+                key={item.id}
+                onRender={HandleRender}
+                onSelect={HandleSelectUser}
+                onRemoveSelection={HandleRemoveUserSelection}
+                isSelected={selectedItems.includes(item._id)}
+              />
             );
           })}
           {data?.data?.length === 0 && (

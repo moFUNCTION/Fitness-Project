@@ -21,8 +21,9 @@ import {
   Textarea,
   useToast,
   Flex,
+  Checkbox,
 } from "@chakra-ui/react";
-import { FaCalendar, FaPhone, FaRuler, FaWeight } from "react-icons/fa";
+import { FaCalendar, FaPhone, FaRuler, FaUser, FaWeight } from "react-icons/fa";
 import { MdEdit, MdEmail, MdNotificationAdd } from "react-icons/md";
 import { GiTargetPoster } from "react-icons/gi";
 import { GoGoal } from "react-icons/go";
@@ -197,6 +198,10 @@ export const UserProfileBox = ({
   profileImg,
   _id,
   onRender,
+  onSelect,
+  isSelected,
+  onRemoveSelection,
+  role,
 }) => {
   const toast = useToast({
     duration: 3000,
@@ -228,7 +233,7 @@ export const UserProfileBox = ({
 
   const handleDeleteItem = async () => {
     await DeleteItem({
-      url: `users/${_id}`,
+      url: `users/${_id}/moveToTrash`,
       method: "delete",
       headers: {
         Authorization: `Bearer ${user.data.token}`,
@@ -273,7 +278,19 @@ export const UserProfileBox = ({
         dir="rtl"
         w="100%"
         maxW="md"
+        h="fit-content"
       >
+        <Checkbox
+          isChecked={isSelected}
+          size="lg"
+          onChange={(e) => {
+            if (e.target.checked) {
+              onSelect(_id);
+            } else {
+              onRemoveSelection(_id);
+            }
+          }}
+        />
         <StatusBadge active={active} />
 
         <Stack spacing={6}>
@@ -356,6 +373,19 @@ export const UserProfileBox = ({
             >
               {ARABIC_LABELS.sendNotification}
             </Button>
+            {(role === "admin" || role === "sub-admin") && (
+              <Button
+                colorScheme="teal"
+                size="lg"
+                rightIcon={<Icon as={MdEdit} />}
+                borderRadius="full"
+                flexGrow="1"
+                as={Link}
+                to={`${_id}/permissions`}
+              >
+                الصلاحيات
+              </Button>
+            )}
           </Flex>
           <Flex wrap="wrap" gap="3">
             <Button

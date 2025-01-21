@@ -32,7 +32,7 @@ const TrainingPlanCard = ({ plan, HandleRender }) => {
   const { loading, error, sendRequest } = useApiRequest();
   const HandleDelete = () => {
     sendRequest({
-      url: `trainingPlan/${plan._id}`,
+      url: `trainingPlan/${plan._id}/moveToTrash`,
       method: "delete",
       headers: {
         Authorization: `Bearer ${user.data.token}`,

@@ -52,7 +52,7 @@ export const CourseBox = ({
   const HandleDelete = async () => {
     await sendRequest({
       method: "delete",
-      url: `/courses/${_id}`,
+      url: `/courses/${_id}/moveToTrash`,
       headers: {
         Authorization: `Bearer ${user.data.token}`,
       },

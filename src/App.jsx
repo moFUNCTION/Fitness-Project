@@ -124,6 +124,18 @@ const UpdateVitament = lazy(() =>
 const Users = lazy(() =>
   import("./Feutures/AuthenticatedRoutes/Users/@View/Index")
 );
+const AddUser = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Users/@Add/Index")
+);
+const UserPermissions = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Users/@View_Permisions/Index")
+);
+const UserPermissionsView = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Users/@View_Permisions/PermisionsView")
+);
+const UserPermissionsCreate = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Users/@View_Permisions/AddPermission")
+);
 const TrainerRequests = lazy(() =>
   import("./Feutures/AuthenticatedRoutes/TrainerRequests/@View/Index")
 );
@@ -140,6 +152,7 @@ const ChatMessages = lazy(() =>
 const AddChat = lazy(() =>
   import("./Feutures/AuthenticatedRoutes/Chats/__Nested/AddChat")
 );
+
 function App() {
   const { user } = useAuth();
   return (
@@ -261,6 +274,13 @@ function App() {
             <Route path="vitaments/:id" element={<Vitament />} />
             <Route path="vitaments/:id/update" element={<UpdateVitament />} />
             <Route path="users" element={<Users />} />
+            <Route path="users/add" element={<AddUser />} />
+            <Route path="users/:id">
+              <Route path="permissions" element={<UserPermissions />}>
+                <Route path="*" element={<UserPermissionsCreate />} />
+                <Route index element={<UserPermissionsCreate />} />
+              </Route>
+            </Route>
             <Route path="trainer-requests" element={<TrainerRequests />} />
             <Route path="trainer-requests/:id" element={<TrainerRequest />} />
             <Route path="trash" element={<Trash />} />

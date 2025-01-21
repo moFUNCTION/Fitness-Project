@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { startTransition, useEffect, useState } from "react";
 import axiosInstance from "../../axiosConfig/axiosInstance";
 import { useAuth } from "../../Context/UserDataContextProvider/UserDataContextProvder";
 export const useFetch = ({ endpoint, params, headers, ...rest }) => {
@@ -16,7 +16,8 @@ export const useFetch = ({ endpoint, params, headers, ...rest }) => {
         },
         ...rest,
       });
-      setData(res.data);
+      startTransition(() => setData(res.data));
+
       setError(undefined);
     } catch (err) {
       setError(err);
