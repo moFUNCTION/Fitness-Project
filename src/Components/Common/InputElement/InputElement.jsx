@@ -35,7 +35,7 @@ export const InputElement = forwardRef(
       <Stack w="100%" {...containerStyles}>
         <InputGroup variant="filled">
           {Icon && !noIcon && (
-            <InputLeftElement h="100%" pointerEvents="none">
+            <InputLeftElement pointerEvents="none">
               <Icon
                 style={{
                   color: "gray",

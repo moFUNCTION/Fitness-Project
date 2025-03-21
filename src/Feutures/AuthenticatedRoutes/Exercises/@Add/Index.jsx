@@ -165,7 +165,6 @@ export default function Index() {
       const { signedURL, videoUri } = await createSignedUrlHelper({
         video: data.video,
       });
-      console.log(signedURL);
       const [videoId] = videoUri.split("/").slice(-1);
       const videoLink = `https://vimeo.com/${videoId}`;
       console.log(videoLink);

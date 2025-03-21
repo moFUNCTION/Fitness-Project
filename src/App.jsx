@@ -34,6 +34,9 @@ const DeepAnatomy = lazy(() =>
 const AddExercise = lazy(() =>
   import("./Feutures/AuthenticatedRoutes/Exercises/@Add/Index")
 );
+const UpdateExercise = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Exercises/@Update/Index")
+);
 const Exercises = lazy(() =>
   import("./Feutures/AuthenticatedRoutes/Exercises/@View/Index")
 );
@@ -73,6 +76,9 @@ const CourseQuizAdd = lazy(() =>
 const CourseQuizUpdate = lazy(() =>
   import("./Feutures/AuthenticatedRoutes/Courses/__Nested/UpdateQuiz/Index")
 );
+const CourseUsers = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Courses/__Nested/Users/Index")
+);
 const TrainingPlans = lazy(() =>
   import("./Feutures/AuthenticatedRoutes/TrainingPlans/@View/Index")
 );
@@ -96,6 +102,15 @@ const MealsCalculation = lazy(() =>
 );
 const UpdateMealCalculation = lazy(() =>
   import("./Feutures/AuthenticatedRoutes/MealsCalculation/@Update/Index")
+);
+const Meals = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Meals/@View/Index")
+);
+const Meal = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Meals/@View_Id/Index")
+);
+const AddMeal = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Meals/@Add/Index")
 );
 const Supplements = lazy(() =>
   import("./Feutures/AuthenticatedRoutes/Supplements/@View/Index")
@@ -147,10 +162,60 @@ const Trash = lazy(() =>
 );
 const Chats = lazy(() => import("./Feutures/AuthenticatedRoutes/Chats/Index"));
 const ChatMessages = lazy(() =>
-  import("./Feutures/AuthenticatedRoutes/Chats/__Nested/Chat.messages")
+  import(
+    "./Feutures/AuthenticatedRoutes/Chats/__Nested/ChatMessages/Chat.messages"
+  )
 );
 const AddChat = lazy(() =>
   import("./Feutures/AuthenticatedRoutes/Chats/__Nested/AddChat")
+);
+// Ads
+const Advertises = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Advertise/@View/Index")
+);
+const AddAdvertise = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Advertise/@Add/Index")
+);
+const UpdateAdvertise = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Advertise/@Update/Index")
+);
+
+// Social
+const SocialLinks = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/SocialLinks/@View/Index")
+);
+const SocialLinkCreate = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/SocialLinks/@Add/Index")
+);
+const SocialLinkUpdate = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/SocialLinks/@Update/Index")
+);
+// Polices
+const Polices = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Polices/@View/Index")
+);
+const UpdatePolicy = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Polices/@Update/Index")
+);
+// Contact
+const Contact = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/ContactUs/@View/Index")
+);
+const ContactAdd = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/ContactUs/@Add/Index")
+);
+const ContactUpdate = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/ContactUs/@Update/Index")
+);
+// Prizes
+const Prizes = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Prizes/@View/Index")
+);
+const AddPrize = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Prizes/@Add/Index")
+);
+const UpdatePrizePage = lazy(() =>
+  import("./Feutures/AuthenticatedRoutes/Prizes/@Update/Index")
 );
 
 function App() {
@@ -218,6 +283,7 @@ function App() {
             <Route path="body-parts" element={<BodyParts />} />
             <Route path="exercises" element={<Exercises />} />
             <Route path="exercises/:id" element={<Exercise />} />
+            <Route path="exercises/:id/update" element={<UpdateExercise />} />
             <Route path="exercises/add" element={<AddExercise />} />
             <Route path="courses" element={<Courses />} />
             <Route path="courses/add" element={<AddCourse />} />
@@ -240,6 +306,7 @@ function App() {
               <Route path="quizes" element={<CourseQuizes />} />
               <Route path="quizes/add" element={<CourseQuizAdd />} />
               <Route path="quizes/update/:id" element={<CourseQuizUpdate />} />
+              <Route path="users" element={<CourseUsers />} />
             </Route>
 
             <Route path="courses/categories" />
@@ -254,6 +321,9 @@ function App() {
             />
             <Route path="discounts" element={<Discounts />} />
             <Route path="meals-calculation" element={<MealsCalculation />} />
+            <Route path="meals" element={<Meals />} />
+            <Route path="meals/:id" element={<Meal />} />
+            <Route path="meals/add" element={<AddMeal />} />
             <Route
               path="meals-calculation/add"
               element={<AddMealCalculation />}
@@ -288,6 +358,24 @@ function App() {
               <Route path=":id" element={<ChatMessages />} />
               <Route path="add/group" element={<AddChat />} />
             </Route>
+            <Route path="ads" element={<Advertises />} />
+            <Route path="ads/add" element={<AddAdvertise />} />
+            <Route path="ads/:id/update" element={<UpdateAdvertise />} />
+            <Route path="social-links" element={<SocialLinks />} />
+            <Route path="social-links/add" element={<SocialLinkCreate />} />
+            <Route
+              path="social-links/:id/update"
+              element={<SocialLinkUpdate />}
+            />
+            <Route path="polices" element={<Polices />} />
+            <Route path="polices/:id/update" element={<UpdatePolicy />} />
+            <Route path="contact-us" element={<Contact />} />
+            <Route path="contact-us/add" element={<ContactAdd />} />
+            <Route path="contact-us/:id/update" element={<ContactUpdate />} />
+
+            <Route path="prizes" element={<Prizes />} />
+            <Route path="prizes/add" element={<AddPrize />} />
+            <Route path="prizes/:id/update" element={<UpdatePrizePage />} />
           </Route>
         </Routes>
       </LazyPageWrapper>

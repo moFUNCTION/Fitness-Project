@@ -113,6 +113,7 @@ export default function Index() {
       DataSend.append("image", data.image);
       DataSend.append("title", data.title);
       DataSend.append("description", data.description);
+      DataSend.append("targetGender", data.targetGender);
       await axiosInstance.put(`/trainingPlan/${id}`, DataSend, {
         headers: {
           Authorization: `Bearer ${user.data.token}`,

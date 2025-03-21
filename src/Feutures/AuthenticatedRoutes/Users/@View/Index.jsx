@@ -10,6 +10,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Select,
   Skeleton,
   Stack,
   TableContainer,
@@ -20,13 +21,21 @@ import {
 } from "@chakra-ui/react";
 import React, { useRef, useState, useTransition } from "react";
 import { GiMedicinePills } from "react-icons/gi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useFetch } from "../../../../Hooks/useFetch/useFetch";
 import { Pagination } from "../../../../Components/Common/Pagination/Pagination";
 import { useAuth } from "../../../../Context/UserDataContextProvider/UserDataContextProvder";
 import { UserProfileBox } from "./Components/UserBox";
 import { useApiRequest } from "../../../../Hooks/useApiRequest/useApiRequest";
 import { MdCancel, MdNotifications } from "react-icons/md";
+import { useForm, useWatch } from "react-hook-form";
+import { ErrorText } from "../../../../Components/Common/ErrorText/ErrorText";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  SearchField,
+  Title,
+} from "../../../../Components/Common/SearchField/SearchField";
 const paths = [
   {
     name: "المشرفين",
@@ -49,12 +58,51 @@ const paths = [
     href: "trainees",
   },
 ];
-const NotificationModal = ({ isOpen, onClose, onSend, isLoading }) => {
-  const messageRef = useRef();
 
-  const handleSend = () => {
-    onSend(messageRef.current.value);
-  };
+const Models = [
+  { en: "Courses", ar: "كورس", value: "Course" },
+  { en: "Packages", ar: "باقة", value: "Package" },
+  { en: "Exercises", ar: "تمرين", value: "Exercise" },
+  { en: "Categories", ar: "فئة", value: "Category" },
+  { en: "Supplements", ar: "مكمل غذائي", value: "Supplement" },
+  { en: "Vitamins", ar: "فيتامين", value: "Vitamin" },
+];
+
+const schema = z.object({
+  message: z
+    .string()
+    .min(3, { message: "يجب أن يكون الرسالة على الأقل 3 أحرف" })
+    .max(100, { message: "يجب أن لا يتجاوز الرسالة 100 حرف" }), // Validate title length
+  targetModel: z.string().min(1, { message: "يجب اختيار الفئة المستهدفة" }), // Ensure a target model is selected
+  targetModelId: z.string().min(1, { message: "يجب اختيار العنصر المستهدف" }), // Ensure a target model ID is selected
+  gender: z.any(),
+});
+
+const NotificationModal = ({ isOpen, onClose, onSend, isLoading }) => {
+  const {
+    register,
+    formState: { errors },
+    control,
+    getValues,
+    handleSubmit,
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
+
+  const targetModel = useWatch({
+    control,
+    name: "targetModel",
+  });
+  const {
+    data: Items,
+    loading: ItemsLoading,
+    error: ItemsError,
+  } = useFetch({
+    endpoint: targetModel,
+    params: {
+      limit: 100000,
+    },
+  });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
@@ -64,10 +112,47 @@ const NotificationModal = ({ isOpen, onClose, onSend, isLoading }) => {
           ارسال اشعار
         </ModalHeader>
         <ModalCloseButton />
-        <ModalBody py={6}>
-          <Textarea ref={messageRef} placeholder="الرسالة" />
+        <ModalBody as={Stack} gap="5" py={6}>
+          <Textarea {...register("message")} placeholder="الرسالة" />
+          <ErrorText>{errors.message?.message}</ErrorText>
+          <Select
+            size="lg"
+            {...register("targetModel")}
+            placeholder="الفئة المستهدفة"
+          >
+            {Models.map((model) => {
+              return (
+                <option value={model.en} key={model.en}>
+                  {model.ar}
+                </option>
+              );
+            })}
+          </Select>
+          <ErrorText>{errors?.targetModel?.message}</ErrorText>
+
+          <Skeleton isLoaded={!ItemsLoading}>
+            <Select
+              {...register("targetModelId")}
+              size="lg"
+              placeholder="العنصر المستهدف"
+            >
+              {Items?.data?.map((item) => {
+                return (
+                  <option value={item._id} key={item._id}>
+                    {item.title}
+                  </option>
+                );
+              })}
+            </Select>
+          </Skeleton>
+          <ErrorText>{errors?.targetModelId?.message}</ErrorText>
+
+          <Select {...register("gender")}>
+            <option value="male">رجال</option>
+            <option value="female">اناث</option>
+          </Select>
           <Button
-            onClick={handleSend}
+            onClick={handleSubmit(onSend)}
             mt="2"
             colorScheme="orange"
             w="100%"
@@ -82,6 +167,8 @@ const NotificationModal = ({ isOpen, onClose, onSend, isLoading }) => {
 };
 
 export default function Index() {
+  const [search] = useSearchParams();
+  const Navigate = useNavigate();
   const toast = useToast({
     duration: 3000,
     isClosable: true,
@@ -104,6 +191,7 @@ export default function Index() {
     endpoint: `/users/getAll/${selectedRole}`,
     params: {
       page,
+      [search.get("searchByName") && "username"]: search.get("searchByName"),
     },
     headers: {
       Authorization: `Bearer ${user.data.token}`,
@@ -119,13 +207,17 @@ export default function Index() {
     loading: sendNotificationLoading,
   } = useApiRequest();
 
-  const handleSendNotification = async (message) => {
+  const handleSendNotification = async (data) => {
+    const DataWillSend = { ...data };
+    DataWillSend.targetModel = Models.find((model) => {
+      return model.en === data.targetModel;
+    }).value;
     await sendNotificationRequest({
       url: "notifications",
       method: "post",
       body: {
         users: selectedItems,
-        message,
+        ...DataWillSend,
       },
       headers: {
         Authorization: `Bearer ${user.data.token}`,
@@ -169,6 +261,19 @@ export default function Index() {
             <Button as={Link} to="add" colorScheme="blue">
               اضافة مستخدم
             </Button>
+            <Button onClick={onNotificationOpen} gap="3" colorScheme="orange">
+              ارسال اشعار
+            </Button>
+            <SearchField
+              onSubmit={(value) => Navigate(`?searchByName=${value}`)}
+            >
+              <Title>البحث عن مستخدم</Title>
+            </SearchField>
+            {search.get("searchByName") && (
+              <Button colorScheme="blue" onClick={() => Navigate()}>
+                يتم البحث علي {search.get("searchByName")}
+              </Button>
+            )}
           </Flex>
         </HStack>
         <Flex

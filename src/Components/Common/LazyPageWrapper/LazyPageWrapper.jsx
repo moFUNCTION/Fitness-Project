@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { CenteredCircularProgress } from "../CenteredCircularProgress/CenteredCircularProgress";
-import { Progress } from "@chakra-ui/react";
+import { Progress, Stack } from "@chakra-ui/react";
 
 export const LazyPageWrapper = ({
   children,
@@ -9,7 +9,7 @@ export const LazyPageWrapper = ({
   return (
     <Suspense
       fallback={
-        <>
+        <Stack>
           <Progress
             pos="fixed"
             top="0"
@@ -19,7 +19,7 @@ export const LazyPageWrapper = ({
             isIndeterminate
           />
           {Loader}
-        </>
+        </Stack>
       }
     >
       {children}

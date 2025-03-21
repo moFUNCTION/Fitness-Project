@@ -149,7 +149,12 @@ export const ExerciseBox = ({
             <Button as={Link} to={_id} variant="solid" colorScheme="blue">
               مشاهدة
             </Button>
-            <Button variant="solid" colorScheme="green">
+            <Button
+              as={Link}
+              to={`${_id}/update`}
+              variant="solid"
+              colorScheme="green"
+            >
               تعديل
             </Button>
             <Button

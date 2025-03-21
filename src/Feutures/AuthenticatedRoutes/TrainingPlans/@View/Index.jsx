@@ -100,6 +100,15 @@ const TrainingPlanCard = ({ plan, HandleRender }) => {
 
           <Box>
             <Text fontSize="sm" color="gray.500" mb={1}>
+              الجنس المستهدف
+            </Text>
+            <Heading size="sm" fontWeight="semibold">
+              {plan.targetGender === "men" ? "رجال " : "نساء"}
+            </Heading>
+          </Box>
+
+          <Box>
+            <Text fontSize="sm" color="gray.500" mb={1}>
               الوصف
             </Text>
             <Text fontSize="sm" noOfLines={2}>

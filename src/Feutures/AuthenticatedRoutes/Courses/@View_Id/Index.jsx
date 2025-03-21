@@ -108,7 +108,6 @@ export default function Index() {
               >
                 تعديل
               </Button>
-              <Button colorScheme="red">حذف</Button>
             </Flex>
           </Stack>
         </CardBody>
@@ -172,6 +171,7 @@ export default function Index() {
             as={Link}
             colorScheme="blue"
             variant="outline"
+            to="users"
             borderRadius="full"
           >
             المستخدمين

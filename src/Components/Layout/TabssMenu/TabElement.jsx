@@ -1,4 +1,4 @@
-import React, { useState, useTransition } from "react";
+import React, { useState } from "react";
 // react router =>{
 import { Link } from "react-router-dom";
 // }
@@ -13,7 +13,6 @@ import {
   Accordion,
   Button,
   Icon,
-  Skeleton,
 } from "@chakra-ui/react";
 // }
 import { MdKeyboardArrowLeft } from "react-icons/md";
@@ -72,23 +71,24 @@ export const TabElement = ({ expand, title, href, icon, childLinks }) => {
       </Accordion>
     </Tab>
   ) : (
-    <Tab
-      as={Link}
-      {...styles.tab}
-      style={{
-        display: "flex",
-        justifyContent: expand ? "start" : "center",
-        alignItems: "center",
-        gap: "20px",
-        width: "100%",
-        padding: "17px",
-      }}
-      to={href}
-    >
-      <Icon fontSize="22px" flexShrink="0">
-        {icon}
-      </Icon>
-      {expand && title}
+    <Tab {...styles.tab}>
+      <Link
+        style={{
+          display: "flex",
+          justifyContent: expand ? "start" : "center",
+          alignItems: "center",
+          gap: "20px",
+          width: "100%",
+          height: "100%",
+          padding: "17px",
+        }}
+        to={href}
+      >
+        <Icon fontSize="22px" flexShrink="0">
+          {icon}
+        </Icon>
+        {expand && title}
+      </Link>
     </Tab>
   );
 };

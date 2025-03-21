@@ -8,7 +8,7 @@ import {
   TabsMenu,
 } from "../../Components/Layout/TabssMenu/TabsMenu";
 import { useAuth } from "../../Context/UserDataContextProvider/UserDataContextProvder";
-
+import { LazyPageWrapper } from "../../Components/Common/LazyPageWrapper/LazyPageWrapper";
 export default function Index() {
   const { user } = useAuth();
   const [isPhoneQuery] = useMediaQuery("(max-width: 900px)");
@@ -16,6 +16,7 @@ export default function Index() {
     <TabsMenuExpandProvider>
       <Stack gap="0">
         <Header />
+
         <Flex
           sx={{
             " > div": {
@@ -29,7 +30,9 @@ export default function Index() {
         >
           {isPhoneQuery ? <MobileTabMenu /> : <TabsMenu />}
           {user.data?.active === true ? (
-            <Outlet />
+            <LazyPageWrapper>
+              <Outlet />
+            </LazyPageWrapper>
           ) : (
             <AccessDenied message="الرجاء التوجه الي مشرفين المنصة لتفعيل حسابك" />
           )}

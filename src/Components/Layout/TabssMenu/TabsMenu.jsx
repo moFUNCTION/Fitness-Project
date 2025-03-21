@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState } from "react";
+// compoents =>{
 import { TabElement } from "./TabElement";
 import {
   Box,
@@ -8,15 +9,18 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  Skeleton,
+  IconButton,
   Stack,
+  Tab,
   Tabs,
-  useMediaQuery,
 } from "@chakra-ui/react";
+// }
+// react router =>{
 import { useLocation } from "react-router-dom";
+// }
 import { TabsValues } from "./TabsMenuValues";
+import { IoIosMenu } from "react-icons/io";
 import { useTabsMenuStatus } from "../../../Context/TabsMenuExpandProvider/TabsMenuExpandProvider";
-import { SearchField, Title } from "../../Common/SearchField/SearchField";
 export const TabsMenu = ({ isDrawer }) => {
   const TabsMenuRef = useRef();
   // pathname cahnging handler =>{
@@ -81,26 +85,6 @@ export const TabsMenu = ({ isDrawer }) => {
               />
             );
           })}
-          <Stack gap="0" p="2" w="100%" alignItems="center">
-            <SearchField
-              BtnStyles={{ m: "2", w: "100%" }}
-              variant={isOpen ? "Bar" : "IconButton"}
-            >
-              <Title>البحث عن كورس</Title>
-            </SearchField>
-            <SearchField
-              BtnStyles={{ m: "2", w: "100%" }}
-              variant={isOpen ? "Bar" : "IconButton"}
-            >
-              <Title>البحث عن تمرينة</Title>
-            </SearchField>
-            <SearchField
-              BtnStyles={{ m: "2", w: "100%" }}
-              variant={isOpen ? "Bar" : "IconButton"}
-            >
-              <Title>البحث عن مستخدم</Title>
-            </SearchField>
-          </Stack>
         </Tabs>
       </Stack>
     </>

@@ -16,6 +16,9 @@ import {
   useDisclosure,
   Divider,
   Stack,
+  Badge,
+  TableContainer,
+  Th,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { z } from "zod";
@@ -141,6 +144,7 @@ export const MealCategory = ({
   Title_EN,
   title_EN,
   title_AR,
+  childCategries,
 }) => {
   const { user } = useAuth();
   const toast = useToast({
@@ -177,6 +181,12 @@ export const MealCategory = ({
     onOpen: onOpenDeleteModal,
   } = useDisclosure();
 
+  const {
+    isOpen: isOpenNested,
+    onToggle: onToggleNested,
+    onClose: onCloseNested,
+  } = useDisclosure();
+
   return (
     <>
       <DeleteModal
@@ -195,7 +205,14 @@ export const MealCategory = ({
         }}
         onRenderPage={onRenderPage}
       />
-      <Tr key={_id}>
+      <Tr cursor={childCategries?.length >= 1 && "pointer"} key={_id}>
+        <Td onClick={childCategries?.length >= 1 && onToggleNested}>
+          {childCategries?.length >= 1 ? (
+            <Badge colorScheme="green">نعم</Badge>
+          ) : (
+            <Badge colorScheme="red">لا</Badge>
+          )}
+        </Td>
         <Td>{Title_AR || title_AR}</Td>
         <Td>{Title_EN || title_EN}</Td>
         <Td>{new Date(createdAt).toLocaleString()}</Td>
@@ -215,6 +232,53 @@ export const MealCategory = ({
           </Button>
         </Td>
       </Tr>
+      <Modal size="4xl" isOpen={isOpenNested} onClose={onCloseNested}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>الاقسام الداخلية</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <TableContainer
+              minH="400px"
+              overflow="auto"
+              className="x-scroll-bar"
+              w="100%"
+              flexShrink="0"
+            >
+              <Table size="lg">
+                <Thead w="100%">
+                  <Tr>
+                    <Th>هل به اقسام</Th>
+                    <Th>العنوان</Th>
+                    <Th>العنوان بالانجليزية</Th>
+                    <Th>تم الانشاء بتوقيت</Th>
+                    <Th>تم التحديث بتوقيت</Th>
+                    <Th>التعديل</Th>
+                    <Th>الحذف</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {childCategries?.map((item) => {
+                    return (
+                      <MealCategory
+                        onRenderPage={onRenderPage}
+                        key={item._id}
+                        {...item}
+                      />
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onCloseNested}>
+              غلق
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

@@ -16,9 +16,10 @@ import { UserProfileBox } from "../@View/Components/UserBox";
 
 export default function Index() {
   const { id } = useParams();
-  const { data, error } = useFetch({
+  const { data, error, loading } = useFetch({
     endpoint: `permissions/${id}/permissions`,
   });
+  console.log("saas", data);
   const {
     data: UserData,
     error: UserError,
@@ -48,20 +49,21 @@ export default function Index() {
           اهلا بك في صلاحيات المستخدم
           <GiMedicinePills />
         </Heading>
-        <Flex gap="3" alignItems="center">
-          <Button as={Link} to="add" colorScheme="blue">
-            اضافة صلاحية
-          </Button>
-        </Flex>
       </HStack>
       <Flex
         p="4"
         bgColor="gray.100"
         gap="3"
         as={Skeleton}
+        w="100%"
+        h="fit-content"
         isLoaded={!UserLoading}
         minH="700px"
         flexShrink="0"
+        flexWrap={{
+          base: "wrap",
+          md: "nowrap",
+        }}
       >
         {UserData.data && (
           <>
@@ -69,7 +71,8 @@ export default function Index() {
             <Stack
               w="100%"
               bgColor="white"
-              h="100%"
+              h="fit-content"
+              overflow="auto"
               borderRadius="xl"
               boxShadow="lg"
               p="3"

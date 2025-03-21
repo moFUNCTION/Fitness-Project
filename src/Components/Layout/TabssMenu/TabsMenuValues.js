@@ -1,5 +1,12 @@
 import { CiUser } from "react-icons/ci";
-import { MdPassword, MdQuiz } from "react-icons/md";
+import {
+  MdAdsClick,
+  MdContactMail,
+  MdFacebook,
+  MdPassword,
+  MdPolicy,
+  MdQuiz,
+} from "react-icons/md";
 import { GiMuscleUp } from "react-icons/gi";
 import { IoIosBody } from "react-icons/io";
 import { MdOutlineSportsGymnastics } from "react-icons/md";
@@ -9,6 +16,7 @@ import { BiChat, BiSolidCategory, BiTrash } from "react-icons/bi";
 import { MdDiscount } from "react-icons/md";
 import { GiMedicinePills } from "react-icons/gi";
 import { FaUsers } from "react-icons/fa";
+import { TbAwardFilled } from "react-icons/tb";
 export const TabsValues = [
   {
     title: "الحساب",
@@ -65,6 +73,11 @@ export const TabsValues = [
     title: "الوجبات",
     Icon: GiMeal,
     href: "/meals-calculation",
+  },
+  {
+    title: "الوجبات الرئيسية",
+    Icon: GiMeal,
+    href: "/meals",
   },
   {
     title: "خطط التمرين",
@@ -135,6 +148,7 @@ export const TabsValues = [
         Icon: BiTrash,
         href: "/trash?search=mealsCalculation",
       },
+
       {
         title: "خطط التمرين",
         Icon: BiTrash,
@@ -171,5 +185,30 @@ export const TabsValues = [
     title: "المحادثات",
     Icon: BiChat,
     href: "/chat",
+  },
+  {
+    title: "الاعلانات",
+    Icon: MdAdsClick,
+    href: "/ads",
+  },
+  {
+    title: "مواقع التواصل الاجتماعي",
+    Icon: MdFacebook,
+    href: "/social-links",
+  },
+  {
+    title: "شروط الاستخدام",
+    Icon: MdPolicy,
+    href: "/polices",
+  },
+  {
+    title: "جهات التواصل",
+    Icon: MdContactMail,
+    href: "/contact-us",
+  },
+  {
+    title: "جوائز",
+    Icon: TbAwardFilled,
+    href: "/prizes",
   },
 ];

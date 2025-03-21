@@ -32,4 +32,7 @@ export const schema = z.object({
     })
     .max(6, { message: "عدد الايام لا يمكن ان يزيد عن 6 ايام" }),
   image: z.any(),
+  targetGender: z.enum(["men", "women"], {
+    message: "الرجاء اختيار الجنس المستهدف",
+  }),
 });

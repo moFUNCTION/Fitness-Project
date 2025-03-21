@@ -8,13 +8,7 @@ import {
   Stack,
   Skeleton,
   Heading,
-  Text,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  InputRightElement,
   HStack,
-  Td,
   Button,
   Modal,
   ModalOverlay,
@@ -25,13 +19,12 @@ import {
   ModalCloseButton,
   useDisclosure,
   useToast,
+  Select,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
 import { MdQuiz } from "react-icons/md";
 import { Pagination } from "../../../../Components/Common/Pagination/Pagination";
 import { useFetch } from "../../../../Hooks/useFetch/useFetch";
-import NoDataImage from "../../../../Assets/NoData/9264822.jpg";
-import { LazyLoadedImage } from "../../../../Components/Common/LazyLoadedImage/LazyLoadedImage";
 import { useAuth } from "../../../../Context/UserDataContextProvider/UserDataContextProvder";
 import { useForm } from "react-hook-form";
 import { InputElement } from "../../../../Components/Common/InputElement/InputElement";
@@ -40,14 +33,21 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useApiRequest } from "../../../../Hooks/useApiRequest/useApiRequest";
 import { MealCategory } from "./Components/MealCategory/MealCategory";
-import { DeleteModal } from "../../../../Components/Common/DeleteModal/DeleteModal";
+import { ErrorText } from "../../../../Components/Common/ErrorText/ErrorText";
 const schema = z.object({
   title_AR: z.string().min(1, { message: "الرجاء ادخال العنوان بالعربية  " }),
   title_EN: z
     .string()
     .min(1, { message: "الرجاء ادخال العنوان بالانجليزية  " }),
+  targetModel: z.string().min(1, { message: "الرجاء ادخال الفئة المستهدفة" }),
+  parentCategory: z.any(),
 });
-const AddmealsCategoryModal = ({ onClose, isOpen, onRenderPage }) => {
+const AddmealsCategoryModal = ({
+  onClose,
+  isOpen,
+  onRenderPage,
+  ParentCategories,
+}) => {
   const toast = useToast({
     position: "top-right",
     duration: 3000,
@@ -60,6 +60,7 @@ const AddmealsCategoryModal = ({ onClose, isOpen, onRenderPage }) => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm({
     resolver: zodResolver(schema),
     mode: "onBlur",
@@ -74,6 +75,7 @@ const AddmealsCategoryModal = ({ onClose, isOpen, onRenderPage }) => {
         body: {
           title_AR: data.title_AR,
           title_EN: data.title_EN,
+          ...data,
         },
         method: "post",
       });
@@ -83,6 +85,7 @@ const AddmealsCategoryModal = ({ onClose, isOpen, onRenderPage }) => {
         title: "تم انشاء الصنف  بنجاح",
         status: "success",
       });
+      reset();
     } catch (err) {
       toast({
         title: "خطأ في انشاء الصنف ",
@@ -100,7 +103,7 @@ const AddmealsCategoryModal = ({ onClose, isOpen, onRenderPage }) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>اضافة تشريح عميق </ModalHeader>
+        <ModalHeader>اضافة صنف من الوجبات </ModalHeader>
         <ModalCloseButton />
         <ModalBody gap="3" as={Stack}>
           <InputElement
@@ -118,6 +121,32 @@ const AddmealsCategoryModal = ({ onClose, isOpen, onRenderPage }) => {
             placeholder="اسم الصنف بالانجليزية"
             Icon={CgGym}
           />
+          <Select
+            variant="filled"
+            size="lg"
+            placeholder="الفئة المستهدفة"
+            {...register("targetModel")}
+          >
+            <option value="Meals">وجبات</option>
+            <option value="MealsCalculation">وجبات محاسبة</option>
+          </Select>
+
+          <Select
+            variant="filled"
+            size="lg"
+            placeholder="الصنف الاب"
+            {...register("parentCategory")}
+          >
+            {ParentCategories?.map((item) => {
+              return (
+                <option key={item._id} value={item._id}>
+                  {item?.title_AR || item?.Title_AR}
+                </option>
+              );
+            })}
+          </Select>
+
+          <ErrorText>{errors?.targetModel?.message}</ErrorText>
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="red" variant="outline" ml={3} onClick={onClose}>
@@ -141,7 +170,21 @@ export default function Index() {
   const [page, setPage] = useState(1);
 
   const { data, loading, HandleRender } = useFetch({
-    endpoint: "/mealsCategory",
+    endpoint: "/mealsCategory?isParent=true",
+    params: {
+      page,
+      limit: 100000000,
+    },
+    headers: {
+      Authorization: `Bearer ${user.data.token}`,
+    },
+  });
+  const {
+    data: ChildCategories,
+    loading: ChildCategorieslLoading,
+    HandleRender: onRenderChildCategories,
+  } = useFetch({
+    endpoint: "/mealsCategory?isParent=false",
     params: {
       page,
     },
@@ -150,13 +193,17 @@ export default function Index() {
     },
   });
   const { isOpen, onClose, onOpen } = useDisclosure();
-  console.log(data);
+
   return (
     <>
       <AddmealsCategoryModal
-        onRenderPage={HandleRender}
+        onRenderPage={async () => {
+          await HandleRender();
+          await onRenderChildCategories();
+        }}
         isOpen={isOpen}
         onClose={onClose}
+        ParentCategories={data?.data}
       />
       <Stack w="100%" p="3">
         <HStack
@@ -192,6 +239,7 @@ export default function Index() {
           <Table size="lg">
             <Thead w="100%">
               <Tr>
+                <Th>هل به اقسام</Th>
                 <Th>العنوان</Th>
                 <Th>العنوان بالانجليزية</Th>
                 <Th>تم الانشاء بتوقيت</Th>
@@ -204,6 +252,9 @@ export default function Index() {
               {data?.data?.map((item) => {
                 return (
                   <MealCategory
+                    childCategries={ChildCategories?.data?.filter((child) => {
+                      return child?.parentCategory?._id === item._id;
+                    })}
                     onRenderPage={HandleRender}
                     key={item._id}
                     {...item}

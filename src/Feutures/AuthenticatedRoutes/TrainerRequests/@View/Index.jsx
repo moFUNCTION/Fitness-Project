@@ -10,9 +10,32 @@ import {
   Skeleton,
   Stack,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { TrainerRequest } from "./Components/TrainerRequest";
+import {
+  SearchField,
+  Title,
+} from "../../../../Components/Common/SearchField/SearchField";
+const StatusList = [
+  {
+    title: "تم رفضه",
+    color: "red",
+    value: "rejected",
+  },
+  {
+    title: "معلق",
+    color: "orange",
+    value: "pending",
+  },
+  {
+    title: "تم الوفوق عليه",
+    color: "green",
+    value: "approved",
+  },
+];
 export default function Index() {
+  const [search] = useSearchParams();
+  const Navigate = useNavigate();
   const { user } = useAuth();
   const [page, setPage] = useState(1);
 
@@ -20,12 +43,13 @@ export default function Index() {
     endpoint: "/trainerRequests",
     params: {
       page,
+      status: search.get("status"),
+      name: search.get("searchByName"),
     },
     headers: {
       Authorization: `Bearer ${user.data.token}`,
     },
   });
-  console.log(data);
   return (
     <Stack p="3" w="100%">
       <HStack
@@ -46,6 +70,32 @@ export default function Index() {
           اهلا بك في طلبات انضمام المدربين
         </Heading>
       </HStack>
+      <Flex as={Skeleton} isLoaded={!loading} gap="3" p="3">
+        {StatusList.map((status) => {
+          return (
+            <Button
+              onClick={() => Navigate(`?status=${status.value}`)}
+              colorScheme={status.color}
+              key={status.value}
+              variant={
+                search.get("status") === status.value ? "outline" : "solid"
+              }
+            >
+              {status.title}
+            </Button>
+          );
+        })}
+        <SearchField
+          onSubmit={(value) => {
+            Navigate(`?searchByName=${value}`);
+          }}
+          BtnStyles={{
+            mr: "auto",
+          }}
+        >
+          <Title>البحث عن طلب بالاسم</Title>
+        </SearchField>
+      </Flex>
       <Flex
         minH="400px"
         flexShrink="0"
